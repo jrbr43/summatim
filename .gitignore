@@ -1,0 +1,35 @@
+# Rust
+/target/
+**/target/
+*.rs.bk
+
+# Node / front
+node_modules/
+**/node_modules/
+ui/dist/
+
+# Tauri / build
+src-tauri/target/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs / temp
+*.log
+tmp_*/
+
+# Modèles locaux (fichiers volumineux)
+donnees/modeles_locaux/
+
+# Binaires / archives de build (à régénérer avec les scripts)
+bin/**
+dist/Resume-YouTube
+dist/*.tar.gz
+dist/*.tar.xz
+
+# Données locales (optionnel : décommenter si vous ne voulez pas versionner les chaînes)
+# chaines.json

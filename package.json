@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "resume-youtube-workspace",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "dev:ui": "npm run dev --prefix ui",
+    "build": "tauri build",
+    "sync-textes-libres": "node scripts/sync-textes-libres-depuis-json.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.1"
+  }
+}

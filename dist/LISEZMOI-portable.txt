@@ -1,0 +1,17 @@
+Resume YouTube - paquet portable Linux
+=====================================
+
+Contenu:
+- Resume-YouTube (AppImage)
+- lancer-Resume-YouTube.sh (script de lancement avec fallback sans FUSE)
+
+Utilisation sur un autre poste:
+1) Copier ces 2 fichiers dans le meme dossier.
+2) Rendre executables:
+   chmod +x Resume-YouTube lancer-Resume-YouTube.sh
+3) Lancer:
+   ./lancer-Resume-YouTube.sh
+
+Notes:
+- Architecture cible: x86_64.
+- Si le double clic ne marche pas, lancer le script depuis un terminal pour voir les erreurs.
