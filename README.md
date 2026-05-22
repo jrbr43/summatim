@@ -23,11 +23,12 @@ L’application en ligne de commande permet de :
 | `cli/` (`resume_youtube_cli`, binaire `resume-youtube`) | Interface CLI. |
 | `src-tauri/` (`resume_youtube_tauri`) | Backend Tauri (commandes IPC, événements jobs). |
 | `ui/` | Front Svelte + Vite. |
-| `chaines.json` | Liste des chaînes (lu/écrit par le core et l’UI ; chemin résolu : `cwd/chaines.json`, sinon parent, ex. racine du dépôt si le CWD est `src-tauri`). |
+| `chaines.json` | Liste des chaînes (fichier **local**, ignoré par Git ; modèle : `chaines.json.example`). |
+| `donnees/chaines/`, `donnees/textes_libres/` | Résumés, transcripts et textes libres (**locaux**, non versionnés). |
 
 ### Fichier de configuration `chaines.json`
 
-Fichier JSON à la racine du dépôt (l’app résout le chemin même si le processus tourne depuis `src-tauri/`). Chaque entrée contient le nom affiché et l’URL de la chaîne. Depuis l’UI, seule l’URL est saisie : le **nom** est le handle après `@` dans l’URL.
+Copiez `chaines.json.example` vers `chaines.json` à la racine du dépôt (l’app résout le chemin même si le processus tourne depuis `src-tauri/`). Chaque entrée contient le nom affiché et l’URL de la chaîne. Depuis l’UI, seule l’URL est saisie : le **nom** est le handle après `@` dans l’URL.
 
 ```json
 [
@@ -38,7 +39,7 @@ Fichier JSON à la racine du dépôt (l’app résout le chemin même si le proc
 L’interface de bureau **charge ce fichier au démarrage**, restaure la dernière chaîne sélectionnée (mémorisée localement dans le navigateur embarqué), puis **récupère et affiche les dernières vidéos** sur le tableau de bord.
 Depuis la colonne de gauche, une icône corbeille permet aussi de **supprimer une chaîne** de `chaines.json` (suppression locale de l’entrée, sans action Git).
 
-La colonne de gauche liste les **chaînes enregistrées** ; un clic charge les dernières vidéos. Le bouton **Résumer** n’apparaît que si le résumé n’a pas déjà été enregistré localement pour cette vidéo. L’URL LM Studio est **fixée dans l’application** à **`http://192.168.1.71:1234`** (non affichée dans les paramètres).
+La colonne de gauche liste les **chaînes enregistrées** ; un clic charge les dernières vidéos. Le bouton **Résumer** n’apparaît que si le résumé n’a pas déjà été enregistré localement pour cette vidéo. L’**adresse du serveur LM Studio** se règle dans **Paramètres → Fournisseur IA → LM Studio** (défaut `http://192.168.1.71:1234`, mémorisée localement).
 Le modèle IA par défaut est **`google/gemma-4-26b-a4b`** (UI, Tauri et CLI si `--lm-modele` n’est pas fourni).
 
 **Ordre des étapes :** le résumé télécharge d’abord le transcript (yt-dlp) ; **LM Studio n’est sollicité qu’ensuite**. Si cette première étape est longue ou bloquée, aucune requête n’apparaît encore côté LM — un bandeau « Traitement en cours » (non bloquant) et le bouton **Logs** le rappellent.

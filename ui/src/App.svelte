@@ -133,9 +133,10 @@
   const cleFournisseurIaStockage = "resume_youtube_fournisseur_ia_v1";
   const cleCleOpenrouterStockage = "resume_youtube_cle_openrouter_v1";
   const cleModeleLmStudioStockage = "resume_youtube_modele_lm_studio_v1";
+  const cleUrlBaseLmStudioStockage = "resume_youtube_url_base_lm_studio_v1";
   const cleModeleOpenrouterStockage = "resume_youtube_modele_openrouter_v1";
   const cleTailleFenetreTokensStockage = "resume_youtube_taille_fenetre_tokens_v1";
-  /** Base HTTP fixe du serveur LM Studio (non exposée dans l’interface). */
+  /** Base HTTP par défaut du serveur LM Studio (modifiable dans les paramètres). */
   const URL_BASE_LM_STUDIO_DEFAUT = "http://192.168.1.71:1234";
   /** Valeur initiale du champ clé OpenRouter (aucune clé réelle dans le dépôt ; l’utilisateur saisit la sienne). */
   const CLE_OPENROUTER_DEFAUT = "";
@@ -160,6 +161,16 @@
     } catch {
       return "";
     }
+  }
+
+  function lireUrlBaseLmStudioInitial(): string {
+    const brut = lireTexteStockage(cleUrlBaseLmStudioStockage).trim();
+    return brut || URL_BASE_LM_STUDIO_DEFAUT;
+  }
+
+  function urlBaseLmStudioEffective(url: string): string {
+    const brut = url.trim();
+    return brut || URL_BASE_LM_STUDIO_DEFAUT;
   }
 
   function lireFournisseurIaInitial(): FournisseurIa {
@@ -204,6 +215,7 @@
   /** Onglet actuellement consulté dans les paramètres IA (indépendant du fournisseur actif). */
   let ongletParametresIa: FournisseurIa = fournisseurIa;
   let cleOpenrouter = lireCleOpenrouterInitial();
+  let urlBaseLmStudio = lireUrlBaseLmStudioInitial();
   let modeleLmStudio = lireTexteStockage(cleModeleLmStudioStockage) || modeleParDefautLmStudio;
   let modeleOpenrouter = lireTexteStockage(cleModeleOpenrouterStockage);
   let lmTemperature = 0.7;
@@ -328,6 +340,7 @@
       localStorage.setItem(cleFournisseurIaStockage, fournisseurIa);
       localStorage.setItem(cleCleOpenrouterStockage, cleOpenrouter);
       localStorage.setItem(cleModeleLmStudioStockage, modeleLmStudio);
+      localStorage.setItem(cleUrlBaseLmStudioStockage, urlBaseLmStudio);
       localStorage.setItem(cleModeleOpenrouterStockage, modeleOpenrouter);
     } catch {
       /* ignore */
@@ -337,6 +350,7 @@
   $: {
     fournisseurIa;
     cleOpenrouter;
+    urlBaseLmStudio;
     modeleLmStudio;
     modeleOpenrouter;
     memoriserFournisseurIaEtClesDansStockage();
@@ -949,7 +963,7 @@
       temperature: lmTemperature,
     };
     if (fournisseurIa === "lm_studio") {
-      base.baseUrl = URL_BASE_LM_STUDIO_DEFAUT;
+      base.baseUrl = urlBaseLmStudioEffective(urlBaseLmStudio);
       base.cleLmStudio = null;
     } else if (fournisseurIa === "local") {
       base.cleLmStudio = null;
@@ -1063,7 +1077,7 @@
         lm: {
           fournisseur: "lm_studio",
           temperature: lmTemperature,
-          baseUrl: URL_BASE_LM_STUDIO_DEFAUT,
+          baseUrl: urlBaseLmStudioEffective(urlBaseLmStudio),
           cleLmStudio: null,
         },
       });
@@ -2289,8 +2303,8 @@
       <div class="carte carte-parametres-ia">
         <h3 class="titre-carte-param-ia">Fournisseur IA</h3>
         <p class="petit-texte">
-          Choisis l’onglet pour configurer LM Studio (serveur réseau prédéfini dans l’application), OpenRouter (clé API
-          + modèles gratuits) ou Local (modèle GGUF embarqué via llama.cpp).
+          Choisis l’onglet pour configurer LM Studio (adresse du serveur + modèle), OpenRouter (clé API + modèles
+          gratuits) ou Local (modèle GGUF embarqué via llama.cpp).
         </p>
         <div class="barre-onglets-param-ia" role="tablist" aria-label="Fournisseur IA">
           <button
@@ -2357,6 +2371,21 @@
 
         {#if ongletParametresIa === "lm_studio"}
           <div class="panneau-onglet-param-ia" role="tabpanel">
+            <div class="champ">
+              <label for="lm-url-serveur">Adresse du serveur</label>
+              <input
+                id="lm-url-serveur"
+                type="url"
+                autocomplete="off"
+                spellcheck="false"
+                bind:value={urlBaseLmStudio}
+                placeholder={URL_BASE_LM_STUDIO_DEFAUT}
+              />
+              <p class="petit-texte">
+                URL de base HTTP du serveur LM Studio (ex. <code>http://localhost:1234</code>). Clique sur Rafraîchir
+                après un changement pour recharger la liste des modèles.
+              </p>
+            </div>
             <div class="champ">
               <label for="lm-modele">Modèle</label>
               <div class="rangee-boutons" style="justify-content: space-between;">

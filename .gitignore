@@ -31,5 +31,8 @@ dist/Resume-YouTube
 dist/*.tar.gz
 dist/*.tar.xz
 
-# Données locales (optionnel : décommenter si vous ne voulez pas versionner les chaînes)
-# chaines.json
+# Données utilisateur (chaînes, résumés, transcripts, textes libres — restent en local)
+chaines.json
+donnees/chaines.json
+donnees/chaines/
+donnees/textes_libres/
